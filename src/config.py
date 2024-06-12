@@ -12,6 +12,9 @@ load_dotenv()
 class Settings:
     config_url: str = os.getenv("CONFIG_URL")
 
+    HOST: str = os.getenv("HOST")
+    PORT: int = os.getenv("PORT")
+
     DB_HOST = os.getenv("DB_HOST")
     DB_PORT = os.getenv("DB_PORT")
     DB_USER = os.getenv("DB_USER")
@@ -19,6 +22,7 @@ class Settings:
     DB_NAME = os.getenv("DB_NAME")
 
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 3
+    REFRESH_TOKEN_EXPIRE_MINUTES: int = 30 * 24 * 60  # 30 days
 
     JWT_ALGORITHM: str = os.getenv("JWT_ALGORITHM")
     PRIVATE_KEY_PATH: Path = BASE_DIR / "certs" / "jwt-private.pem"

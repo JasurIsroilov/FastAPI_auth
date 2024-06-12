@@ -7,3 +7,5 @@ class UserErrors(str, enum.Enum):
     incorrect_password = "Incorrect password!"
     unauthorized = "Unauthorized!"
     invalid_token = "Invalid token!"
+    not_access_token = "Use access token!"
+    not_refresh_token = "Use refresh token!"

@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from database import get_async_session
 from .schemas import RegisterSchema, TokenSchema, UserSchema
-from .user_manager import UserManager, get_current_user
+from .user_manager import UserManager, get_current_user, get_current_user_for_refresh
 from .token_manager import TokenManager, get_current_token_payload
 
 
@@ -20,12 +20,16 @@ async def register(user: RegisterSchema, session: AsyncSession = Depends(get_asy
 @router.post("/login", response_model=TokenSchema)
 async def login(user: RegisterSchema, session: AsyncSession = Depends(get_async_session)):
     user_schema = await UserManager.login_user(user, session)
-    jwt_payload = {
-        "sub": user_schema.id,
-        "username": user.username
-    }
-    token = TokenManager.jwt_encode(jwt_payload)
-    return TokenSchema(access_token=token, token_type="Bearer")
+    access_token = TokenManager.create_access_token(user=user_schema)
+    refresh_token = TokenManager.create_refresh_token(user=user_schema)
+    return TokenSchema(access_token=access_token,
+                       refresh_token=refresh_token)
+
+
+@router.post("/refresh", response_model=TokenSchema, response_model_exclude_none=True)
+async def refresh(user: UserSchema = Depends(get_current_user_for_refresh)):
+    access_token = TokenManager.create_access_token(user=user)
+    return TokenSchema(access_token=access_token)
 
 
 @router.get("/me")

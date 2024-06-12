@@ -2,7 +2,6 @@ from pydantic import BaseModel
 
 
 class RegisterSchema(BaseModel):
-
     username: str
     password: str
 
@@ -12,7 +11,8 @@ class RegisterSchema(BaseModel):
 
 class TokenSchema(BaseModel):
     access_token: str
-    token_type: str
+    refresh_token: str | None = None
+    token_type: str = "Bearer"
 
 
 class UserSchema(BaseModel):
